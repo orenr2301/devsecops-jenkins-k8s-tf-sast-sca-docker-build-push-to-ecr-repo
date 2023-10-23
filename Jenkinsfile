@@ -10,19 +10,24 @@ pipeline {
 			}
     }
 
-	stage('RunSCAAnalysisUsingSnyk') {
-            steps {		
-				withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-					sh 'mvn snyk:test -fn'
-				}
-			}
+	stage('RunSnykAnalysis') {
+  	   steps {
+               echo 'Scanning with Snyke. . . . .'
+	       snykSecurity(
+	         snykInstallation: 'orenSnyk',
+	         snykTokenId: 'SNYK_TOKEN',
+	         failOnError: 'false',
+	         failOIssues: 'false',
+		 )
+	      }
+	  }
     }
 
 	stage('Build') { 
             steps { 
                withDockerRegistry([credentialsId: "dockerlogin", url: ""]) {
                  script{
-                 app =  docker.build("asg")
+                 app =  docker.build("orenr")
                  }
                }
             }
@@ -31,7 +36,7 @@ pipeline {
 	stage('Push') {
             steps {
                 script{
-                    docker.withRegistry('https://145988340565.dkr.ecr.us-west-2.amazonaws.com', 'ecr:us-west-2:aws-credentials') {
+                    docker.withRegistry('https://422049563027.dkr.ecr.eu-central-1.amazonaws.com/orenr', 'ecr:eu-central-1:aws-credentials') {
                     app.push("latest")
                     }
                 }
