@@ -17,7 +17,7 @@ pipeline {
 	         snykInstallation: 'orenSnyk',
 	         snykTokenId: 'SNYK_TOKEN',
 	         failOnError: 'false',
-	         failOIssues: 'false',
+	         failOnIssues: 'false',
 		 )
 	      }
 	  }
